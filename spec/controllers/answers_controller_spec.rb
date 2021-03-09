@@ -2,37 +2,48 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:question) {create (:question)}
+  let(:user) {create (:user)}
   describe 'Get #new' do
-    before {get :new, params:{question_id:question}}
-
-    it 'render new view' do
+    it 'render new view for logined user' do
+      sign_in(user)
+      get :new, params:{question_id:question}
       expect(response).to render_template :new
+    end
+    it 'Not render new view for unlogined user' do
+      get :new, params:{question_id:question}
+      expect(response).to_not render_template :new
     end
   end
 
   describe 'POST #create' do
-    context 'with valid attributes' do
-      
-      before { post :create, params: { question_id: question, answer: attributes_for(:answer) }}
+    context 'User logined' do
+      before{sign_in(user)}
+      context 'with valid attributes' do
+        before { post :create, params: { question_id: question, answer: attributes_for(:answer) }}
+        it 'save a new answer to database' do
+          expect { post :create, params: { question_id: question,  answer: attributes_for(:answer) } }.to change { question.answers.count }.by(1)
+        end
 
-      it 'save a new answer to database' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to change { question.answers.count }.by(1)
+        it 'redirect to show view' do
+          expect(response).to redirect_to question_answer_path(question,question.answers.last)
+        end
       end
 
-      it 'redirect to show view' do
-        expect(response).to redirect_to [question, :answers]
+      context 'with invalid attributes' do
+        before { post :create, params: { question_id: question,   answer: attributes_for(:answer, :invalid) }}
+
+        it 'does not save the question' do
+          expect { post :create, params: { question_id: question,   answer: attributes_for(:answer, :invalid) } }.not_to change(Answer, :count)
+        end
+
+        it 're-render new view' do
+          expect(response).to render_template :new
+        end
       end
     end
-
-    context 'with invalid attributes' do
-      before { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }}
-
-      it 'does not save the question' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.not_to change(Answer, :count)
-      end
-
-      it 're-render new view' do
-        expect(response).to render_template :new
+    context "User unlogined" do
+      it 'not save a new answer to database' do
+        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to_not change { question.answers.count }
       end
     end
   end

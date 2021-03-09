@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :answer do
-    title { "MyString" }
-    correct? {false}
-    question {nil}
+    correct {false}
+    sequence(:title) { |n| "Answer#{n}" }
+    question
     trait :invalid do 
       title{nil}
     end

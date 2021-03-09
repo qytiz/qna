@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) {create (:question)}
+  let(:user) { create(:user) }
   describe 'Get #index' do
     let(:questions) {create_list(:question,3)}
     before {get :index}
@@ -24,6 +25,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'Get #new' do
+    before{sign_in(user)}
     before {get :new}
 
     it 'render new view' do
@@ -32,6 +34,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'Get #edit' do
+    before{sign_in(user)}
     before{ get :edit, params:{id:question}}
 
     it 'renders edit view' do
@@ -39,6 +42,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
   describe 'POST #create' do
+    before{sign_in(user)}
     context 'with valid attributes' do
       it 'saves a new  question in the database'do
       count= Question.count
@@ -64,6 +68,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
   describe 'PATCH #update' do
+    before{login(user)}
     context 'with valid attributes' do
       it 'assigns the requested question to @question' do
         patch :update, params:{id:question,question:attributes_for(:question)}
@@ -98,6 +103,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
   describe 'DELETE #destroy' do
+    before{login(user)}
     let!(:question) {create (:question)}
     it 'deletes the question'do
     expect{delete :destroy, params:{id: question}}.to change(Question,:count).by(-1)

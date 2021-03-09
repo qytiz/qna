@@ -1,1 +1,6 @@
-= form_with model:@answer do
+= form_with model:[question,answer] do |f|
+  = f.label :title
+  = f.text_area :title
+  = f.label :correct
+  = f.select :correct, [true,false]
+  = f.submit 'Add new answer'
