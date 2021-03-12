@@ -6,8 +6,6 @@ p = question.body
 = form_with model:[@question,@answer] do |f|
   = f.label :title
   = f.text_area :title
-  = f.label :correct
-  = f.select :correct, [true,false]
   = f.submit 'Add new answer'
   -if current_user&.author?(question)
     p= link_to 'Delete question', question_path(question), method: :delete

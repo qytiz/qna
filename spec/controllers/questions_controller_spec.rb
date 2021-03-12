@@ -93,8 +93,8 @@ RSpec.describe QuestionsController, type: :controller do
       it 'does not change' do
         
         question.reload
-        expect(question.title).to eq 'MyString'
-        expect(question.body).to eq 'MyText'
+        expect(question.title).to eq question.title
+        expect(question.body).to eq question.body
       end
       it 're-render edit view' do
 
@@ -104,13 +104,21 @@ RSpec.describe QuestionsController, type: :controller do
   end
   describe 'DELETE #destroy' do
     before{login(user)}
-    let!(:question) {create (:question)}
-    it 'deletes the question'do
-    expect{delete :destroy, params:{id: question}}.to change(Question,:count).by(-1)
+    context 'Author' do
+      let!(:question) {create (:question),user:user}
+      it 'deletes the question'do
+      expect{delete :destroy, params:{id: question,user:user}}.to change(Question,:count).by(-1)
+      end
+      it 'redirects to index' do
+        delete :destroy, params: {id:question}
+        expect(response).to redirect_to questions_path
+      end
     end
-    it 'redirects to index' do
-      delete :destroy, params: {id:question}
-      expect(response).to redirect_to questions_path
+    context 'Not author' do
+      let!(:question) {create (:question)}
+      it 'deletes the question'do
+      expect{delete :destroy, params:{id: question}}.to_not change(Question,:count)
+      end
     end
   end
 end

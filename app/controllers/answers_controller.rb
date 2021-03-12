@@ -1,23 +1,21 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, except: [:index]
-  def index; end
-
-  def new
-    @answer = question.answers.new
-  end
 
   def create
     @answer = question.answers.build(answer_params)
+    @answer.user_id=current_user.id
     if @answer.save
-      redirect_to question_answer_path(question,@answer), notice:'New answer sucessfully created'
+      redirect_to answer_path(@answer), notice:'New answer sucessfully created'
     else
-      render :new
+      render question
     end
   end
 
   def destroy
-    answer.destroy
-    redirect_to questions_path, notice:'Answer delited sucessfully'
+    if current_user&.author?(answer)
+      answer.destroy
+      redirect_to questions_path, notice:'Answer delited sucessfully'
+    end
   end
 
   private
@@ -31,6 +29,6 @@ class AnswersController < ApplicationController
   helper_method :question
   helper_method :answer
   def answer_params
-    params.require(:answer).permit(:title,:correct)
+    params.require(:answer).permit(:title)
   end
 end

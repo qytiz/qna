@@ -8,7 +8,8 @@ feature 'User can create question' do
       visit questions_path
       click_on 'Ask question'
     end
-      scenario 'Asks a question' do
+
+    scenario 'Asks a question' do
       
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
@@ -25,6 +26,7 @@ feature 'User can create question' do
       expect(page).to have_content "Title can't be blank"
     end
   end
+
   scenario 'Unauthentifacated user tries to asks a question' do
     visit questions_path
     click_on 'Ask question'

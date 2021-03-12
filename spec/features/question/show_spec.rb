@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 feature 'user can see list questions' do
+  let!(:questions) {create_list(:question,5)}
   it 'user can see list of all question' do
-    question=create(:question)
     visit questions_path
-    expect(page).to have_content question.title
-    expect(page).to have_content question.body
+    questions.each do |q|
+    expect(page).to have_content q.title
+    expect(page).to have_content q.body
+    end
   end
 end

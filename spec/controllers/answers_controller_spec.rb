@@ -25,7 +25,7 @@ RSpec.describe AnswersController, type: :controller do
         end
 
         it 'redirect to show view' do
-          expect(response).to redirect_to question_answer_path(question,question.answers.last)
+          expect(response).to redirect_to answer_path(question.answers.last)
         end
       end
 
@@ -37,7 +37,7 @@ RSpec.describe AnswersController, type: :controller do
         end
 
         it 're-render new view' do
-          expect(response).to render_template :new
+          expect(response).to render_template 'questions/_question'
         end
       end
     end
@@ -45,6 +45,17 @@ RSpec.describe AnswersController, type: :controller do
       it 'not save a new answer to database' do
         expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to_not change { question.answers.count }
       end
+    end
+  end
+  describe 'DELETE #destroy' do
+    before{login(user)}
+    let!(:answer) {create (:answer),question:question,user:user}
+    it 'deletes the question'do
+    expect{delete :destroy, params:{id: answer,user:user,question:question}}.to change(Answer,:count).by(-1)
+    end
+    it 'redirects to index' do
+      delete :destroy, params: {id:answer}
+      expect(response).to redirect_to questions_path
     end
   end
 end
