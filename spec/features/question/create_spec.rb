@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'User can create question' do
   given(:user) { create(:user) }
+
   describe 'Authenticated user' do
     background do
       sign_in(user)
@@ -10,20 +13,18 @@ feature 'User can create question' do
     end
 
     scenario 'Asks a question' do
-      
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
       click_on 'Ask'
-      
+
       expect(page).to have_content 'Your question sucessfully created.'
       expect(page).to have_content 'Test question'
       expect(page).to have_content 'text text text'
     end
-  
-    scenario 'Asks a question with errors' do 
-    
+
+    scenario 'Asks a question with errors' do
       click_on 'Ask'
-      expect(page).to have_content "Title can't be blank"
+      expect(page).to have_content 'error(s) detected:'
     end
   end
 

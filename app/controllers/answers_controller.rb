@@ -1,20 +1,24 @@
+# frozen_string_literal: true
+
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, except: [:index]
+  before_action :authenticate_user!
 
   def create
     @answer = question.answers.build(answer_params)
-    @answer.user_id=current_user.id
+    @answer.user = current_user
     if @answer.save
-      redirect_to answer_path(@answer), notice:'New answer sucessfully created'
+      redirect_to question_path(question), notice: 'New answer sucessfully created'
     else
-      render question
+      render 'questions/show'
     end
   end
 
   def destroy
     if current_user&.author?(answer)
       answer.destroy
-      redirect_to questions_path, notice:'Answer delited sucessfully'
+      redirect_to questions_path, notice: 'Answer delited sucessfully'
+    else
+      render 'questions/show', alert: 'You are not owner of this answer'
     end
   end
 
@@ -23,8 +27,9 @@ class AnswersController < ApplicationController
   def question
     @question ||= Question.find(params[:question_id])
   end
+
   def answer
-    @answer ||=Answer.find(params[:id])
+    @answer ||= Answer.find(params[:id])
   end
   helper_method :question
   helper_method :answer

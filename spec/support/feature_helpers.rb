@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FeatetureHelpers
   def sign_in(user)
     visit new_user_session_path

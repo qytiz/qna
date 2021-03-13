@@ -1,4 +1,4 @@
--if answer.id.present?
+-if answer.persisted?
   li
     p=answer.title
     -if current_user&.author?(answer)
