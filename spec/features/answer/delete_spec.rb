@@ -14,6 +14,7 @@ feature 'Only author user can delete answers' do
 
       scenario 'can delete answer' do
         visit question_path(question)
+        expect(page).to have_content answer.title
         click_on 'Delete answer'
         expect(page).to have_content 'Answer delited sucessfully'
         expect(page).to_not have_content answer.title

@@ -18,7 +18,7 @@ class AnswersController < ApplicationController
       answer.destroy
       redirect_to questions_path, notice: 'Answer delited sucessfully'
     else
-      render 'questions/show', alert: 'You are not owner of this answer'
+      redirect_to questions_path, alert: 'You are not owner of this answer'
     end
   end
 

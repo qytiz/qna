@@ -6,19 +6,6 @@ RSpec.describe AnswersController, type: :controller do
   let(:question) { create(:question) }
   let(:user) { create(:user) }
 
-  describe 'Get #new' do
-    it 'render new view for logined user' do
-      sign_in(user)
-      get :new, params: { question_id: question }
-      expect(response).to render_template :new
-    end
-
-    it 'Not render new view for unlogined user' do
-      get :new, params: { question_id: question }
-      expect(response).to_not render_template :new
-    end
-  end
-
   describe 'POST #create' do
     context 'User logined' do
       before { sign_in(user) }
@@ -74,17 +61,22 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     it 'redirects to index' do
-      delete :destroy, params: { id: answer }
+      delete :destroy, params: { id: answer,question_id:question }
       expect(response).to redirect_to questions_path
     end
   end
   context 'Not author' do
     let!(:answer) { create :answer, question: question }
+    before { login(user) }
 
     it 'not deletes the answer' do
       expect do
         delete :destroy, params: { id: answer, question: question }
       end.to_not change(Answer, :count)
+    end
+    it 'redirect to index' do
+        delete :destroy, params: { id: answer, question: question }
+        expect(response).to redirect_to questions_path
     end
   end
 end

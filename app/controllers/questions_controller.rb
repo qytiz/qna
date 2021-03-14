@@ -36,7 +36,7 @@ class QuestionsController < ApplicationController
       question.destroy
       redirect_to questions_path, notice: 'Question delited sucessfully'
     else
-      render question, alert: 'You are not owner of this question'
+      redirect_to questions_path, alert: 'You are not owner of this question'
     end
   end
 
