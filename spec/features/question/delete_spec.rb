@@ -11,6 +11,7 @@ feature 'Only author user can delete questions' do
 
     scenario 'can delete question' do
       visit question_path(question)
+      expect(page).to have_content question.title
       click_on 'Delete question'
       expect(page).to have_content 'Question delited sucessfully'
       expect(page).to_not have_content question.title
