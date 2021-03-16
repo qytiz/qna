@@ -25,4 +25,12 @@ feature 'Only author user can delete questions' do
       expect(page).to_not have_content 'Delete question'
     end
   end
+  context 'User not logined' do
+    let!(:question) { create :question, user: user }
+
+    scenario 'cant delete question' do
+      visit question_path(question)
+      expect(page).to_not have_content 'Delete question'
+    end
+  end
 end
