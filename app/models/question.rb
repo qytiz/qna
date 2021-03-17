@@ -5,4 +5,8 @@ class Question < ApplicationRecord
   belongs_to :user
 
   validates :title, :body, presence: true
+
+  def best_answer?
+    answers.find_by(best_answer: true) != nil
+  end
 end

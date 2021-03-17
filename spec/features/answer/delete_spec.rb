@@ -12,11 +12,10 @@ feature 'Only author user can delete answers' do
       let!(:question) { create :question, user: user }
       let!(:answer) { create :answer, user: user, question: question }
 
-      scenario 'can delete answer' do
+      scenario 'can delete answer', js: true do
         visit question_path(question)
         expect(page).to have_content answer.title
         click_on 'Delete answer'
-        expect(page).to have_content 'Answer delited sucessfully'
         expect(page).to_not have_content answer.title
       end
     end
