@@ -85,34 +85,69 @@ RSpec.describe AnswersController, type: :controller do
   end
   describe 'PATCH #update' do
     let!(:answer) { create :answer, question: question, user: user }
-    before { login(user) }
-    context 'with valid_atrtributes' do
-      it 'changes answer attributes' do
+
+    context 'User unlogined' do
+      it 'not change answer' do
         patch :update, params: { id: answer, answer: { title: 'new body' } }, format: :js
         answer.reload
-        expect(answer.title).to eq 'new body'
-      end
-
-      it 'renders update view' do
-        patch :update, params: { id: answer, answer: { title: 'new body' } }, format: :js
-        expect(response).to render_template :update
+        expect(answer.title).to_not eq 'new body'
       end
     end
 
-    context 'with invalid attributes' do
-      before { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js }
+    context 'User logined' do
+      before { login(user) }
 
-      it 'does not save the question' do
-        expect do
-          post :create,
-               params: { question_id: question, answer: attributes_for(:answer, :invalid) },
-               format: :js
-        end.not_to change(answer, :title)
+      context 'with valid_atrtributes' do
+        it 'changes answer attributes' do
+          patch :update, params: { id: answer, answer: { title: 'new body' } }, format: :js
+          answer.reload
+          expect(answer.title).to eq 'new body'
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: { title: 'new body' } }, format: :js
+          expect(response).to render_template :update
+        end
       end
 
-      it 're-render new view' do
-        expect(response).to render_template :create
+      context 'with invalid attributes' do
+        before do
+          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+        end
+
+        it 'does not save the answer' do
+          expect do
+            post :create,
+                 params: { question_id: question, answer: attributes_for(:answer, :invalid) },
+                 format: :js
+          end.not_to change(answer, :title)
+        end
+
+        it 're-render new view' do
+          expect(response).to render_template :create
+        end
       end
+
+      context 'User not change other user answer' do
+        it 'does not change other user question' do
+          user = create(:user)
+          login(user)
+          patch :update, params: { id: answer, answer: { title: 'new body' } }, format: :js
+          answer.reload
+          expect(answer.title).to_not eq 'new body'
+        end
+      end
+    end
+  end
+
+  describe 'POST #mark_best' do
+    let(:question) { create(:question, user: user) }
+    let(:answer) { create(:answer, user: user, question: question) }
+    before { login(user) }
+    
+    it 'Mark answer as best' do
+      post :mark_best, params: { id: answer.id }, format: :js
+      expect { answer.reload }.to change(answer, :best_answer)
     end
   end
 end

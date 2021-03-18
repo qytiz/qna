@@ -10,13 +10,19 @@ class AnswersController < ApplicationController
   end
 
   def update
-    @answer = Answer.find(params[:id])
-    @answer.update(answer_params)
-    @question = @answer.question
+    if current_user&.author?(answer)
+      answer.update(answer_params)
+      @question = answer.question
+    end
   end
 
   def destroy
     answer.destroy if current_user&.author?(answer)
+  end
+
+  def mark_best
+    @question = answer.question
+    answer.set_best if current_user&.author?(question)
   end
 
   private

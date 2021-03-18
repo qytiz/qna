@@ -78,33 +78,59 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before { login(user) }
+    let(:question) { create(:question, user: user) }
 
-    context 'with valid attributes' do
-      it 'assigns the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
-        expect(assigns(:question)).to eq question
-      end
-
-      it 'changes question attributes' do
+    context 'User unlogined' do
+      it 'not change question' do
         patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }, format: :js
         question.reload
-        expect(question.title).to eq 'new title'
-        expect(question.body).to eq 'new body'
-      end
-
-      it 'redirect to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
-        expect(response).to redirect_to :question
+        expect(question.title).to_not eq 'new title'
+        expect(question.body).to_not eq 'new body'
       end
     end
 
-    context 'with invalid attributes' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js }
-      it 'does not change' do
-        question.reload
-        expect(question.title).to eq question.title
-        expect(question.body).to eq question.body
+    context 'User logined' do
+      before { login(user) }
+
+      context 'with valid attributes' do
+        it 'assigns the requested question to @question' do
+          patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
+          expect(assigns(:question)).to eq question
+        end
+
+        it 'changes question attributes' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }, format: :js
+          question.reload
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
+
+        it 'redirect to updated question' do
+          patch :update, params: { id: question, question: attributes_for(:question) }, format: :js
+          expect(response).to redirect_to :question
+        end
+      end
+
+      context 'with invalid attributes' do
+        before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js }
+        
+        it 'does not change' do
+          question.reload
+          expect(question.title).to eq question.title
+          expect(question.body).to eq question.body
+        end
+      end
+
+      context 'other user question' do
+        let(:user) { create(:user) }
+        before { login(user) }
+
+        it 'Not edit' do
+          patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+          question.reload
+          expect(question.title).to eq question.title
+          expect(question.body).to eq question.body
+        end
       end
     end
   end
@@ -136,17 +162,6 @@ RSpec.describe QuestionsController, type: :controller do
         delete :destroy, params: { id: question }
         expect(response).to redirect_to questions_path
       end
-    end
-  end
-
-  describe 'POST #mark_best' do
-    let(:user) { create(:user) }
-    let(:question) { create(:question, user: user) }
-    let(:answer) { create(:answer, user: user, question: question) }
-    before { login(user) }
-    it 'Mark answer as best' do
-      post :mark_best, params: { id: answer.id }, format: :js
-      expect { answer.reload }.to change(answer, :best_answer)
     end
   end
 end

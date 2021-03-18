@@ -6,7 +6,7 @@ class Question < ApplicationRecord
 
   validates :title, :body, presence: true
 
-  def best_answer?
-    answers.find_by(best_answer: true) != nil
+  def have_best_answer?
+    !!answers.find_by(best_answer: true)
   end
 end

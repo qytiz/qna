@@ -9,4 +9,4 @@
         =f.text_area :title
         =f.submit 'Save'
     -if current_user&.author?(answer.question) && !answer.best_answer
-      =link_to 'Mark as best', mark_best_question_path(answer),remote:true, method: :post
+      =link_to 'Mark as best', mark_best_answer_path(answer),remote:true, method: :post
