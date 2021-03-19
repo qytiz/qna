@@ -1,5 +1,12 @@
 -if answer.persisted?
-  li
+  li class="answer-id-#{answer.id}"
     p=answer.title
     -if current_user&.author?(answer)
-      = link_to 'Delete answer', answer_path(answer), method: :delete
+      = link_to 'Delete answer', answer_path(answer), remote:true, method: :delete
+      = link_to 'Edit', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
+      =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
+        =f.label :title, 'Your answer'
+        =f.text_area :title
+        =f.submit 'Save'
+    -if current_user&.author?(answer.question) && !answer.best_answer
+      =link_to 'Mark as best', mark_best_answer_path(answer),remote:true, method: :post

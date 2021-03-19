@@ -27,7 +27,7 @@ feature 'Only author user can delete questions' do
     end
   end
   context 'User not logined' do
-    let!(:question) { create :question, user: user }
+    let!(:question) { create :question }
 
     scenario 'cant delete question' do
       visit question_path(question)

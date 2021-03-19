@@ -6,20 +6,23 @@ class AnswersController < ApplicationController
   def create
     @answer = question.answers.build(answer_params)
     @answer.user = current_user
-    if @answer.save
-      redirect_to question_path(question), notice: 'New answer sucessfully created'
-    else
-      render 'questions/show'
+    @answer.save
+  end
+
+  def update
+    if current_user&.author?(answer)
+      answer.update(answer_params)
+      @question = answer.question
     end
   end
 
   def destroy
-    if current_user&.author?(answer)
-      answer.destroy
-      redirect_to questions_path, notice: 'Answer delited sucessfully'
-    else
-      redirect_to questions_path, alert: 'You are not owner of this answer'
-    end
+    answer.destroy if current_user&.author?(answer)
+  end
+
+  def mark_best
+    @question = answer.question
+    answer.set_best if current_user&.author?(question)
   end
 
   private
