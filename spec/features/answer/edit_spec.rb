@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'User can edit answer' do
@@ -42,5 +44,37 @@ feature 'User can edit answer' do
     sign_in(new_user)
     visit question_path(question)
     expect(page).to_not have_content 'Edit'
+  end
+
+  context 'edit with atttachments', js: true do
+    before do
+      sign_in(user)
+      visit question_path(question)
+      within(".answer-id-#{answer.id}") do
+        click_on 'Edit'
+        attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_on 'Save'
+      end
+    end
+
+    scenario 'files added' do
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
+    end
+
+    scenario 'delete files' do
+      within(".answer-id-#{answer.id}") do
+        within("#file-#{answer.files.first.id}") { click_on 'Delete' }
+        expect(page).to_not have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+
+    scenario 'tries to delete others question files' do
+      click_on 'logout'
+      sign_in(create(:user))
+      visit question_path(question)
+      within first(".answer-id-#{answer.id}") { expect(page).to_not have_link 'Delete' }
+    end
   end
 end
