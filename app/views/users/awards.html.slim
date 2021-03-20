@@ -1,0 +1,6 @@
+ul
+  - @awards.each do |award| 
+    li 
+      = award.title
+      = image_tag(award.file.filename.to_s, size: "100x100")
+      br
