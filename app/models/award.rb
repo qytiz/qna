@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class Award < ApplicationRecord
   belongs_to :question
 
   has_one_attached :file
-  
+
   has_one :award_owning, dependent: :destroy
   has_one :user, through: :award_owning
 

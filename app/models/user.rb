@@ -15,6 +15,4 @@ class User < ApplicationRecord
   def author?(object)
     id == object.user_id
   end
-
-
 end

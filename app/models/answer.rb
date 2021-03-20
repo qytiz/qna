@@ -3,7 +3,7 @@
 class Answer < ApplicationRecord
   belongs_to :question
   belongs_to :user
-  
+
   has_many :links, dependent: :destroy, as: :linkable
   has_many_attached :files
 
@@ -19,8 +19,6 @@ class Answer < ApplicationRecord
       old_best_answer.update!(best_answer: false) if old_best_answer.present?
       update!(best_answer: true)
     end
-    if question.award.present?
-      question.award.reward_the_user(user)
-    end
+    question.award.reward_the_user(user) if question.award.present?
   end
 end

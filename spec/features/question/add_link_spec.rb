@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'User can add link to question' do
-  given(:user){create(:user)}
-  given(:url){'htttps://google.com'}
+  given(:user) { create(:user) }
+  given(:url) { 'htttps://google.com' }
 
   scenario 'user adds link when ask question' do
     sign_in(user)

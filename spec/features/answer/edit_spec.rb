@@ -78,10 +78,10 @@ feature 'User can edit answer' do
     end
   end
 
-  context "with links",js: true do
+  context 'with links', js: true do
     before do
       sign_in(user)
-      answer.links.build(name: "google", url: "http://google.com")
+      answer.links.build(name: 'google', url: 'http://google.com')
       answer.save
       visit question_path(question)
     end
@@ -93,25 +93,23 @@ feature 'User can edit answer' do
     end
 
     scenario 'with adding another link' do
-      
       within ".answer-id-#{answer.id}" do
-      click_on 'Edit'
-      click_on 'add link'
-      fill_in 'Link name', with: "google 2"
-      fill_in 'Url', with: "https://www.google.com/maps/"
+        click_on 'Edit'
+        click_on 'add link'
+        fill_in 'Link name', with: 'google 2'
+        fill_in 'Url', with: 'https://www.google.com/maps/'
 
-      click_on 'Save'
+        click_on 'Save'
       end
-        expect(page).to have_link 'google'
-        expect(page).to have_link 'google 2'
+      expect(page).to have_link 'google'
+      expect(page).to have_link 'google 2'
     end
 
     scenario 'user try to delete someone else link' do
-    click_on 'logout'
-    sign_in(create(:user))
+      click_on 'logout'
+      sign_in(create(:user))
 
-    expect(page).to_not have_button 'Delete link'
-    end  
+      expect(page).to_not have_button 'Delete link'
+    end
   end
-
 end
