@@ -30,6 +30,7 @@ gem 'slim-rails'
 gem 'devise'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+gem 'google-cloud-storage', '~> 1.8', require: false
 gem 'rubocop'
 gem 'rubocop-rails'
 gem 'rubocop-rspec'

@@ -144,7 +144,7 @@ RSpec.describe AnswersController, type: :controller do
     let(:question) { create(:question, user: user) }
     let(:answer) { create(:answer, user: user, question: question) }
     before { login(user) }
-    
+
     it 'Mark answer as best' do
       post :mark_best, params: { id: answer.id }, format: :js
       expect { answer.reload }.to change(answer, :best_answer)

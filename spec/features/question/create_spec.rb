@@ -26,6 +26,14 @@ feature 'User can create question' do
       click_on 'Ask'
       expect(page).to have_content 'error(s) detected:'
     end
+
+    scenario 'attach file' do
+      fill_in 'Title', with: 'Test question'
+      fill_in 'Body', with: 'text text text'
+      attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+      click_on 'Ask'
+      expect(page).to have_link 'rails_helper.rb'
+    end
   end
 
   scenario 'Unauthentifacated user tries to asks a question' do
