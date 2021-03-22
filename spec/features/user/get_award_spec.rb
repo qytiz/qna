@@ -19,6 +19,7 @@ feature 'user can have awards' do
 
     fill_in 'Title', with: 'Test answer'
     click_on 'Add new answer'
+    visit current_path
     click_on 'Mark as best'
     click_on 'Your rewards'
 

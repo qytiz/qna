@@ -11,6 +11,7 @@ require("jquery")
 require("@nathanvda/cocoon")
 require("packs/answers.js")
 require("packs/questions.js")
+require("packs/votes.js")
 
 Rails.start()
 Turbolinks.start()
