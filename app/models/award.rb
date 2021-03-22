@@ -11,6 +11,6 @@ class Award < ApplicationRecord
   validates :title, presence: true
 
   def reward_the_user(answer_user)
-    self.user = answer_user
+    self.update(user: answer_user)
   end
 end

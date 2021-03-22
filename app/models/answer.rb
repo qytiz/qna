@@ -18,7 +18,7 @@ class Answer < ApplicationRecord
     Answer.transaction do
       old_best_answer.update!(best_answer: false) if old_best_answer.present?
       update!(best_answer: true)
+      question.award.reward_the_user(user) if question.award.present?
     end
-    question.award.reward_the_user(user) if question.award.present?
   end
 end
