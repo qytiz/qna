@@ -12,9 +12,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users, only: %i[] do
-    get :awards, on: :member
-  end
+  resources  :awards, only: [:index]
 
   resources :files, only: [:destroy]
   resources :links, only: [:destroy]
