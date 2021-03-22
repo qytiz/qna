@@ -8,6 +8,18 @@
           p= link_to file.filename.to_s, url_for(file)
           - if current_user&.author?(question)
             = link_to 'Delete', file_path(file), method: :delete, remote: true, direct_upload: true
+    -if answer.links.present?
+      .links
+        ul 
+          -answer.links.each do |link|
+            div id="link-#{link.id}"
+              - if link.a_gist?
+                  script src="#{link.url}.js" width="300" height="300"
+              - else  
+                li= link_to link.name, link.url
+              -if current_user&.author?(answer)
+                li= button_to 'Delete link', link_path(answer, link: link), remote: true, method: :delete
+    
     -if current_user&.author?(answer)
       = link_to 'Delete answer', answer_path(answer), remote:true, method: :delete
       = link_to 'Edit', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
@@ -15,7 +27,9 @@
         =f.label :title, 'Your answer'
         =f.text_area :title
         = f.label :files
-        = f.file_field :files, multiple: true 
+        = f.file_field :files, multiple: true
+        .links
+          = link_to_add_association 'add link', f, :links 
         =f.submit 'Save'
     -if current_user&.author?(answer.question) && !answer.best_answer
       =link_to 'Mark as best', mark_best_answer_path(answer),remote:true, method: :post

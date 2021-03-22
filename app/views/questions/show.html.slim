@@ -6,6 +6,23 @@ p = question.body
       p= link_to file.filename.to_s, url_for(file)
       - if current_user&.author?(question)
             = link_to 'Delete', file_path(file), method: :delete, remote: true
+-if question.links.present?
+  .links
+    ul
+      -question.links.each do |link|
+        div id="link-#{link.id}"
+            - if link.a_gist?
+                script src="#{link.url}.js" width="300" height="300"
+            - else  
+              li= link_to link.name, link.url
+            -if current_user&.author?(question)
+              li= button_to 'Delete link', link_path(question, link: link), remote: true, method: :delete
+-if question.award.present?
+  .award
+    = "Potential reward:" 
+    br
+    = question.award.title
+    = image_tag(question.award.file.filename.to_s, size: "100x100")
 
 .answer-errors
   
@@ -17,6 +34,15 @@ p = question.body
   = f.text_area :title
   = f.label :files
   = f.file_field :files, multiple: true 
+  = f.fields_for :links do |l|
+    = l.label :name, 'Link name'
+    = l.text_field :name
+    = l.label :url
+    = l.text_field :url
+
+  .links
+    = link_to_add_association 'add link', f, :links
+    
   = f.submit 'Add new answer'
 
 
