@@ -7,22 +7,10 @@ class Vote < ApplicationRecord
   validates :score, inclusion: { in: [-1, 1], message: 'No double votes!' }
   validate :author_cannot_vote
 
-  def self.upvote(user, votable)
-    vote = Vote.find_or_initialize_by(user: user, votable: votable)
-    vote.score += 1
-    destroy_if_revote(vote)
-  end
+  def destroy_if_revote
+    return self unless score.zero?
 
-  def self.downvote(user, votable)
-    vote = Vote.find_or_initialize_by(user: user, votable: votable)
-    vote.score -= 1
-    destroy_if_revote(vote)
-  end
-
-  def self.destroy_if_revote(vote)
-    return vote unless vote.score.zero?
-
-    vote.destroy
+    destroy
     nil
   end
 

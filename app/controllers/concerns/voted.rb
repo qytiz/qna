@@ -4,7 +4,7 @@ module Voted
   extend ActiveSupport::Concern
 
   def upvote
-    vote = Vote.upvote(current_user, votable)
+    vote = votable.upvote(current_user)
     respond_to do |format|
       format.json do
         if vote.nil? || vote.save
@@ -17,7 +17,7 @@ module Voted
   end
 
   def downvote
-    vote = Vote.downvote(current_user, votable)
+    vote = votable.downvote(current_user)
     respond_to do |format|
       format.json do
         if vote.nil? || vote.save
