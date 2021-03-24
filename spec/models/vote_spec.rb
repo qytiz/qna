@@ -10,7 +10,7 @@ RSpec.describe Vote, type: :model do
     vote = answer.upvote(user)
     vote.save
     expect(vote.destroy_if_revote).to eq vote
-    vote = answer.downvote(user)
-    expect(vote).to eq nil
+    answer.downvote(user)
+    expect(Vote.last).to eq nil
   end
 end

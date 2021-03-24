@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require './spec/controllers/voted_controller_spec'
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:question) { create(:question) }
   let(:user) { create(:user) }
-
+  include_examples 'voted controller'
   describe 'POST #create' do
     context 'User logined' do
       before { sign_in(user) }

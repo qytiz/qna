@@ -7,7 +7,6 @@ $(document).on('turbolinks:load',function(){
   });
 
   $('form.new-answer').on('ajax:success', function(e) {
-    console.log(e)
     var answer =e.detail[0];
     $('.answers').append('<p>'+answer.title+'</p>');
   }).on('ajax:error', function(e){
