@@ -10,13 +10,17 @@ module Votable
   def upvote(user)
     vote = Vote.find_or_initialize_by(user: user, votable: self)
     vote.score += 1
-    vote.destroy_if_revote
+    return vote unless vote.valid?
+
+    vote.save
   end
 
   def downvote(user)
     vote = Vote.find_or_initialize_by(user: user, votable: self)
     vote.score -= 1
-    vote.destroy_if_revote
+    return vote unless vote.valid?
+
+    vote.save
   end
 
   def total_score

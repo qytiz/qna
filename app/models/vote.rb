@@ -7,12 +7,6 @@ class Vote < ApplicationRecord
   validates :score, inclusion: { in: [-1, 0, 1], message: 'No double votes!' }
   validate :author_cannot_vote
 
-  def destroy_if_revote
-    return self unless score.zero?
-
-    destroy
-  end
-
   private
 
   def author_cannot_vote
