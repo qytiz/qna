@@ -6,16 +6,19 @@ RSpec.describe Votable do
   let!(:user) { create(:user) }
   let!(:answer) { create(:answer) }
 
-  it do
-    answer.upvote(user)
+  it 'Upvote metod' do
+    answer.vote(user, 1)
     expect(answer.votes.last.score).to eq 1
   end
-  it do
-    answer.downvote(user)
+
+  it 'Downvote metod' do
+    answer.vote(user, -1)
     expect(answer.votes.last.score).to eq(-1)
   end
+
   it 'Total score of votable' do
     create_list(:vote, 5, user: create(:user), score: 1, votable: answer)
-    expect(answer.total_score).to eq 5
+    create_list(:vote, 2, user: create(:user), score: -1, votable: answer)
+    expect(answer.total_score).to eq 3
   end
 end

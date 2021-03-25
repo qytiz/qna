@@ -7,20 +7,15 @@ module Votable
     has_many :votes, as: :votable, dependent: :destroy
   end
 
-  def upvote(user)
+  def vote(user, score_change)
     vote = Vote.find_or_initialize_by(user: user, votable: self)
-    vote.score += 1
+    vote.score += score_change
+
+    return vote.delete_if_revote if vote.score.zero?
     return vote unless vote.valid?
 
     vote.save
-  end
-
-  def downvote(user)
-    vote = Vote.find_or_initialize_by(user: user, votable: self)
-    vote.score -= 1
-    return vote unless vote.valid?
-
-    vote.save
+    vote
   end
 
   def total_score
