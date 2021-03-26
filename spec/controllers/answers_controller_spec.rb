@@ -1,44 +1,37 @@
 # frozen_string_literal: true
 
+require './spec/controllers/voted_controller_spec'
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:question) { create(:question) }
   let(:user) { create(:user) }
-
+  include_examples 'voted controller'
   describe 'POST #create' do
     context 'User logined' do
       before { sign_in(user) }
 
       context 'with valid attributes' do
-        before { post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js }
+        before { post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json }
 
         it 'save a new answer to database' do
           expect do
-            post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
+            post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json
           end.to change { question.answers.count }.by(1)
-        end
-
-        it 'redirect to show view' do
-          expect(response).to render_template :create
         end
       end
 
       context 'with invalid attributes' do
         before do
-          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
         end
 
         it 'does not save the question' do
           expect do
             post :create,
                  params: { question_id: question, answer: attributes_for(:answer, :invalid) },
-                 format: :js
+                 format: :json
           end.not_to change(Answer, :count)
-        end
-
-        it 're-render new view' do
-          expect(response).to render_template :create
         end
       end
     end
@@ -112,19 +105,15 @@ RSpec.describe AnswersController, type: :controller do
 
       context 'with invalid attributes' do
         before do
-          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+          post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
         end
 
         it 'does not save the answer' do
           expect do
             post :create,
                  params: { question_id: question, answer: attributes_for(:answer, :invalid) },
-                 format: :js
+                 format: :json
           end.not_to change(answer, :title)
-        end
-
-        it 're-render new view' do
-          expect(response).to render_template :create
         end
       end
 

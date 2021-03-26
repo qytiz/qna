@@ -1,6 +1,6 @@
 h1 = question.title
 p = question.body 
--if @question.files.attached?
+-if question.files.attached?
   -question.files.each do |file|
     div id="file-#{file.id}"
       p= link_to file.filename.to_s, url_for(file)
@@ -29,7 +29,7 @@ p = question.body
 -if current_user&.author?(question)
   p= link_to 'Delete question', question_path(question), method: :delete
 
-= form_with model:[@question,@answer], local:false, direct_upload: true do |f|
+= form_with model:[@question,@answer], class: 'new-answer', local:false, direct_upload: true,data: {type: :json} do |f|
   = f.label :title
   = f.text_area :title
   = f.label :files

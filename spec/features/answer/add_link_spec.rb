@@ -16,6 +16,7 @@ feature 'User can add link to answer' do
     fill_in 'Url', with: url
 
     click_on 'Add new answer'
+    visit question_path(question)
     within '.answers' do
       expect(page).to have_link 'My url', href: url
     end

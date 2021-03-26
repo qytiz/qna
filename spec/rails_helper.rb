@@ -37,6 +37,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
   config.include FeatetureHelpers, type: :feature
+  config.include PauseHelpers, type: :feature
 
   Capybara.javascript_driver = :selenium_chrome
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

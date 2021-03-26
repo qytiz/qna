@@ -1,5 +1,15 @@
 -if answer.persisted?
   li class="answer-id-#{answer.id}"
+    div id="answer-#{answer.id}-vote"
+      -if  (current_user.present? && !current_user.author?(answer))
+        = render 'shared/votes/upvote_link', votable: answer
+        br
+        = render 'shared/votes/downvote_link', votable: answer
+        br
+      p class="total-score"
+        =answer.total_score
+      br
+        
     p=answer.title
     -if answer.files.attached?
       div class='attachments'
