@@ -2,6 +2,11 @@
 
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
+
+  after_action :publish_question, only: [:create]
+  after_action :set_question_for_gon, only: [:show]
+  expose :comment, -> { question.comments.new }
+
   def index
     @questions = Question.all
   end
@@ -40,8 +45,18 @@ class QuestionsController < ApplicationController
 
   private
 
+  def publish_question
+    return if @question.errors.any?
+
+    ActionCable.server.broadcast 'questions', { question: @question, user_id: current_user.id }
+  end
+
   def question
     @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new
+  end
+
+  def set_question_for_gon
+    gon.question_id = question.id
   end
 
   helper_method :question

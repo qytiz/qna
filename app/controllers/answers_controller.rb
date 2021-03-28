@@ -3,6 +3,9 @@
 class AnswersController < ApplicationController
   include Voted
   before_action :authenticate_user!
+  after_action :publish_answer, only: [:create]
+  after_action :set_answer_for_gon, only: [:create]
+  expose :comment, -> { answer.comments.new }
 
   def create
     @answer = question.answers.new(answer_params)
@@ -35,8 +38,20 @@ class AnswersController < ApplicationController
 
   private
 
+  def publish_answer
+    return if @answer.errors.any?
+
+    ActionCable.server.broadcast "question_#{@answer.question.id}/answers",
+                                 { answer: @answer, user_id: current_user.id }
+  end
+
   def question
     @question ||= Question.find(params[:question_id])
+  end
+
+  def set_answer_for_gon
+    gon.answer_id = answer.id
+    gon.user_id = current_user.id if current_user
   end
 
   def answer

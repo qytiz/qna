@@ -57,16 +57,16 @@ feature 'User can edit question' do
     end
 
     scenario 'files added' do
+      visit question_path(question)
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
     end
 
     scenario 'delete files' do
-      within(".question-id-#{question.id}") do
-        within("#file-#{question.files.first.id}") { click_on 'Delete' }
-        expect(page).to_not have_link 'rails_helper.rb'
-        expect(page).to have_link 'spec_helper.rb'
-      end
+      visit question_path(question)
+      within("#file-#{question.files.first.id}") { click_on 'Delete' }
+      expect(page).to_not have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
     end
 
     scenario 'tries to delete others question files' do
@@ -85,6 +85,7 @@ feature 'User can edit question' do
     end
 
     scenario 'with deleting links' do
+      visit question_path(question)
       click_button 'Delete link'
 
       expect(page).to_not have_link 'google'
@@ -98,7 +99,7 @@ feature 'User can edit question' do
       fill_in 'Url', with: 'https://www.google.com/maps/'
 
       click_on 'Save'
-
+      visit question_path(question)
       expect(page).to have_link 'google'
       expect(page).to have_link 'google 2'
     end
