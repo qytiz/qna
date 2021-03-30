@@ -3,10 +3,11 @@
 class Ability
   include CanCan::Ability
   attr_reader :user
+
   def initialize(user)
-    @user=user
+    @user = user
     if user
-     user.admin? ? admin_abbilities : user_abbilities
+      user.admin? ? admin_abbilities : user_abbilities
     else
       guest_abbilities
     end
@@ -22,9 +23,9 @@ class Ability
 
   def user_abbilities
     guest_abbilities
-       
+
     can :create, [Question, Answer, Comment]
-    can [:update,:destroy], [Question, Answer, Comment], user_id:user.id
+    can %i[update destroy], [Question, Answer, Comment], user_id: user.id
 
     can :mark_best, Answer do |answer|
       user.author?(answer.question)

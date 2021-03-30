@@ -7,8 +7,6 @@ class QuestionsController < ApplicationController
   after_action :set_question_for_gon, only: [:show]
   expose :comment, -> { question.comments.new }
 
- 
-  
   def index
     @questions = Question.all
   end

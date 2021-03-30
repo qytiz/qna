@@ -6,7 +6,7 @@ class AnswersController < ApplicationController
   after_action :publish_answer, only: [:create]
   after_action :set_answer_for_gon, only: [:create]
   expose :comment, -> { answer.comments.new }
- 
+
   def create
     @answer = question.answers.new(answer_params)
     @answer.user = current_user
@@ -21,7 +21,7 @@ class AnswersController < ApplicationController
   end
 
   def update
-      answer.update(answer_params) if can?(:update, answer)
+    answer.update(answer_params) if can?(:update, answer)
   end
 
   def destroy
@@ -30,7 +30,7 @@ class AnswersController < ApplicationController
 
   def mark_best
     @question = answer.question
-    answer.set_best if can?(:mark_best,answer)
+    answer.set_best if can?(:mark_best, answer)
   end
 
   private
