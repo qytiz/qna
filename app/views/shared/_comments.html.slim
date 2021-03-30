@@ -1,7 +1,7 @@
 div class="comments-#{commentable.class.name.underscore}-#{commentable.id}"
   = render 'shared/errors', resource: comment
   = render commentable.comments
-- if current_user
+- if can? :create, Comment
   div class="comments-#{commentable.class.name.underscore}-#{commentable.id}-errors"
   div class="new-comment-#{commentable.class.name.underscore}-#{commentable.id}"
     = link_to 'Add comment', '#', class: 'add-comment', data: { commentable: "#{commentable.class.name.underscore}-#{commentable.id}" }

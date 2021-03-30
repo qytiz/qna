@@ -7,6 +7,8 @@ class QuestionsController < ApplicationController
   after_action :set_question_for_gon, only: [:show]
   expose :comment, -> { question.comments.new }
 
+ 
+  
   def index
     @questions = Question.all
   end
@@ -31,15 +33,15 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    question.update(question_params) if current_user&.author?(question)
+    question.update(question_params) if can?(:update, question)
   end
 
   def destroy
-    if current_user&.author?(question)
+    if can?(:destroy, question)
       question.destroy
       redirect_to questions_path, notice: 'Question delited sucessfully'
     else
-      redirect_to questions_path, alert: 'You are not owner of this question'
+      redirect_to questions_path, alert: 'You can not destroy this question'
     end
   end
 

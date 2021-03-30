@@ -6,7 +6,7 @@ class AnswersController < ApplicationController
   after_action :publish_answer, only: [:create]
   after_action :set_answer_for_gon, only: [:create]
   expose :comment, -> { answer.comments.new }
-
+ 
   def create
     @answer = question.answers.new(answer_params)
     @answer.user = current_user
@@ -21,19 +21,16 @@ class AnswersController < ApplicationController
   end
 
   def update
-    if current_user&.author?(answer)
-      answer.update(answer_params)
-      @question = answer.question
-    end
+      answer.update(answer_params) if can?(:update, answer)
   end
 
   def destroy
-    answer.destroy if current_user&.author?(answer)
+    answer.destroy if can?(:destroy, answer)
   end
 
   def mark_best
     @question = answer.question
-    answer.set_best if current_user&.author?(question)
+    answer.set_best if can?(:mark_best,answer)
   end
 
   private
@@ -51,14 +48,15 @@ class AnswersController < ApplicationController
 
   def set_answer_for_gon
     gon.answer_id = answer.id
-    gon.user_id = current_user.id if current_user
   end
 
   def answer
     @answer ||= Answer.find(params[:id])
   end
+
   helper_method :question
   helper_method :answer
+
   def answer_params
     params.require(:answer).permit(:title, files: [], links_attributes: %i[name url])
   end

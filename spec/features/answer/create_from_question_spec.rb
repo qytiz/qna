@@ -64,10 +64,7 @@ feature 'user can create new answer from question page' do
   context 'User unlogined' do
     scenario ' user can create new answer with valid data' do
       visit question_path(question)
-      fill_in 'Title', with: 'Test answer'
-      click_on 'Add new answer'
-
-      expect(page).to have_content 'You need to sign in or sign up before continuing.'
+      expect(page).to_not have_field 'Title'
     end
   end
 end

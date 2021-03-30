@@ -2,7 +2,6 @@
 
 module Voted
   extend ActiveSupport::Concern
-
   def upvote
     vote = votable.vote(current_user, 1)
     vote_json_return(vote)
