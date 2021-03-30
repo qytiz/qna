@@ -2,8 +2,11 @@
 
 class LinksController < ApplicationController
   before_action :authenticate_user!
+  authorize_resource
+
   def destroy
-    link.destroy if can?(:destroy, link)
+    authorize! :destroy, link
+    link.destroy
   end
 
   private

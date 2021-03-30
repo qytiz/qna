@@ -31,8 +31,12 @@ class Ability
       user.author?(answer.question)
     end
 
-    can [:upvote, :downvote, :delete_vote], Answer do |answer|
-      !user.author?(answer)
+    can [:upvote, :downvote], Answer, Question do |votable|
+      !user.author?(votable)
+    end
+
+    can [:delete_vote], Vote do |vote|
+      user.author?(vote)
     end
 
     can :destroy, ActiveStorage::Attachment do |file|

@@ -1,4 +1,15 @@
 .question data-id="#{question.id}"
+  div id="question-#{question.id}-vote"
+    -if  can? :upvote, question
+      = render 'shared/votes/upvote_link', votable: question
+      br
+    -if  can? :downvote, question
+      = render 'shared/votes/downvote_link', votable: question
+      br
+    p class="total-score"
+      =question.total_score
+    br
+        
 h1 = question.title
 p = question.body 
 -if question.files.attached?

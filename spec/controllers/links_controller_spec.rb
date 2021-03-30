@@ -40,10 +40,10 @@ RSpec.describe LinksController, type: :controller do
         end.to_not change(question.links, :count)
       end
 
-      it 're-renders destroy view' do
+      it 'Get 403 status', js: true do
         delete :destroy, params: { id: question, link: question.links.first }, format: :js
 
-        expect(response).to render_template :destroy
+        expect(response).to have_http_status 403
       end
     end
   end

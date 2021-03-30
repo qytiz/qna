@@ -2,10 +2,11 @@
 
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
-
+  include Voted
   after_action :publish_question, only: [:create]
   after_action :set_question_for_gon, only: [:show]
   expose :comment, -> { question.comments.new }
+  authorize_resource
 
   def index
     @questions = Question.all
@@ -22,6 +23,7 @@ class QuestionsController < ApplicationController
   end
 
   def create
+    authorize! :create, Question
     @question = current_user.questions.new(question_params)
     if @question.save
       redirect_to @question, notice: 'Your question sucessfully created.'
@@ -31,16 +33,14 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    question.update(question_params) if can?(:update, question)
+    authorize! :update, question
+    question.update(question_params)
   end
 
   def destroy
-    if can?(:destroy, question)
-      question.destroy
-      redirect_to questions_path, notice: 'Question delited sucessfully'
-    else
-      redirect_to questions_path, alert: 'You can not destroy this question'
-    end
+    authorize! :destroy, question
+    question.destroy
+    redirect_to questions_path, notice: 'Question delited sucessfully'
   end
 
   private
