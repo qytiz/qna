@@ -12,7 +12,10 @@ require("@nathanvda/cocoon")
 require("packs/answers.js")
 require("packs/questions.js")
 require("packs/votes.js")
+require("packs/comments")
+require("handlebars");
 
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+

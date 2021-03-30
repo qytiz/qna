@@ -1,0 +1,11 @@
+div class="comments-#{commentable.class.name.underscore}-#{commentable.id}"
+  = render 'shared/errors', resource: comment
+  = render commentable.comments
+- if current_user
+  div class="comments-#{commentable.class.name.underscore}-#{commentable.id}-errors"
+  div class="new-comment-#{commentable.class.name.underscore}-#{commentable.id}"
+    = link_to 'Add comment', '#', class: 'add-comment', data: { commentable: "#{commentable.class.name.underscore}-#{commentable.id}" }
+    = form_with model: [commentable, comment], local:false, direct_upload: true, class: "new-comment-#{commentable.class.name.underscore}-#{commentable.id} hidden" do |f|
+        = f.label :body, 'Comment body'
+        = f.text_area :body
+        = f.submit 'Comment'

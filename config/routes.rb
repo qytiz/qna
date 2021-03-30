@@ -11,8 +11,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :questions do
-    resources :answers, concerns: [:votable], shallow: true do
+  concern :commentable do
+    resources :comments, shallow: true, only: :create
+  end
+
+  resources :questions, concerns: [:commentable] do
+    resources :answers, concerns: %i[votable commentable], shallow: true do
       member do
         post :mark_best
         post :delete_file
@@ -24,4 +28,5 @@ Rails.application.routes.draw do
 
   resources :files, only: [:destroy]
   resources :links, only: [:destroy]
+  mount ActionCable.server => '/cable'
 end

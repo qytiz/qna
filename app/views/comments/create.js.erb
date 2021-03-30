@@ -1,0 +1,5 @@
+$('.comments-<%=comment.commentable_type.downcase%>-<%=comment.commentable.id%>-errors').html('<%= render 'shared/errors', resource: comment %>');
+<% if comment.persisted? %>
+  console.log('.comments-<%=comment.commentable_type.downcase%>-<%=comment.commentable.id%>')
+  $('.comments-<%=comment.commentable_type.downcase%>-<%=comment.commentable.id%>').append('<%= j render comment %>');
+<% end %>

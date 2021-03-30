@@ -31,7 +31,10 @@ gem 'devise'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'cocoon'
+gem 'decent_exposure'
+gem 'gon'
 gem 'google-cloud-storage', '~> 1.8', require: false
+gem 'handlebars_assets'
 gem 'rubocop'
 gem 'rubocop-rails'
 gem 'rubocop-rspec'

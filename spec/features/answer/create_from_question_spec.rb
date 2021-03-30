@@ -24,7 +24,7 @@ feature 'user can create new answer from question page' do
       fill_in 'Title', with: 'Test answer'
       attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
       click_on 'Add new answer'
-      pause # Without pause test going too fats and new answer don't save before reloading page
+      expect(page).to have_content 'Test answer'
       visit question_path(question)
       expect(page).to have_link 'rails_helper.rb'
     end
@@ -33,6 +33,31 @@ feature 'user can create new answer from question page' do
       click_on 'Add new answer'
 
       expect(page).to have_content "Title can't be blank"
+    end
+
+    context 'multiple sessions', js: true do
+      scenario 'question appears at another user page' do
+        Capybara.using_session('user') do
+          sign_in(user)
+          visit question_path(question)
+          click_on 'Add new answer'
+        end
+
+        Capybara.using_session('guest') do
+          visit question_path(question)
+        end
+
+        Capybara.using_session('user') do
+          fill_in 'Title', with: 'Test answer'
+          click_on 'Add new answer'
+
+          expect(page).to have_content 'Test answer'
+        end
+
+        Capybara.using_session('guest') do
+          expect(page).to have_content 'Test answer'
+        end
+      end
     end
   end
 
