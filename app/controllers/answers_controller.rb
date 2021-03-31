@@ -5,11 +5,11 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   after_action :publish_answer, only: [:create]
   after_action :set_answer_for_gon, only: [:create]
+  before_action :answer, only: %i[update destroy mark_best]
   expose :comment, -> { answer.comments.new }
   authorize_resource
 
   def create
-    authorize! :create, Answer
     @answer = question.answers.new(answer_params)
     @answer.user = current_user
 
@@ -23,17 +23,14 @@ class AnswersController < ApplicationController
   end
 
   def update
-    authorize! :update, answer
     answer.update(answer_params)
   end
 
   def destroy
-    authorize! :destroy, answer
     answer.destroy
   end
 
   def mark_best
-    authorize! :mark_best, answer
     @question = answer.question
     answer.set_best
   end

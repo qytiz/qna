@@ -31,7 +31,7 @@ class Ability
       user.author?(answer.question)
     end
 
-    can [:upvote, :downvote], Answer, Question do |votable|
+    can [:upvote, :downvote], [Answer, Question] do |votable|
       !user.author?(votable)
     end
 

@@ -23,7 +23,6 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    authorize! :create, Question
     @question = current_user.questions.new(question_params)
     if @question.save
       redirect_to @question, notice: 'Your question sucessfully created.'
@@ -33,12 +32,10 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    authorize! :update, question
     question.update(question_params)
   end
 
   def destroy
-    authorize! :destroy, question
     question.destroy
     redirect_to questions_path, notice: 'Question delited sucessfully'
   end
