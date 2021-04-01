@@ -52,17 +52,10 @@ describe Ability do
 
     it { should be_able_to :upvote, create(:answer, user: other) }
     it { should be_able_to :downvote, create(:answer, user: other) }
-    it 'can delete self vote' do
-      vote = other_question.vote(user, 1)
-      should be_able_to :delete_vote, vote
-    end
 
     it { should_not be_able_to :upvote, create(:answer, user: user) }
     it { should_not be_able_to :downvote, create(:answer, user: user) }
-    it 'can not delete other vote' do
-      vote = other_question.vote(other, 1)
-      should_not be_able_to :delete_vote, vote
-    end
+
     it 'can destroy file' do
       question.files.attach(
         io: File.open(Rails.root.join('spec', 'rails_helper.rb')),
