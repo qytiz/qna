@@ -35,10 +35,6 @@ class Ability
       !user.author?(votable)
     end
 
-    can [:delete_vote], Vote do |vote|
-      user.author?(vote)
-    end
-
     can :destroy, ActiveStorage::Attachment do |file|
       user.author?(file.record)
     end

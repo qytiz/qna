@@ -6,23 +6,26 @@ class QuestionsController < ApplicationController
   after_action :publish_question, only: [:create]
   after_action :set_question_for_gon, only: [:show]
   expose :comment, -> { question.comments.new }
-  authorize_resource
 
   def index
+    authorize! :index, Question
     @questions = Question.all
   end
 
   def show
+    authorize! :show, Question
     @answer ||= question.answers.new
     @answer.links.new
   end
 
   def new
+    authorize! :new, Question
     question.links.new
     question.build_award
   end
 
   def create
+    authorize! :create, Question
     @question = current_user.questions.new(question_params)
     if @question.save
       redirect_to @question, notice: 'Your question sucessfully created.'
@@ -31,11 +34,17 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def edit
+    authorize! :edit, Question
+  end
+
   def update
+    authorize! :update, question
     question.update(question_params)
   end
 
   def destroy
+    authorize! :destroy, question
     question.destroy
     redirect_to questions_path, notice: 'Question delited sucessfully'
   end
