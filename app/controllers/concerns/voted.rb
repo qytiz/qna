@@ -2,13 +2,14 @@
 
 module Voted
   extend ActiveSupport::Concern
-
   def upvote
+    authorize! :upvote, votable
     vote = votable.vote(current_user, 1)
     vote_json_return(vote)
   end
 
   def downvote
+    authorize! :downvote, votable
     vote = votable.vote(current_user, -1)
     vote_json_return(vote)
   end

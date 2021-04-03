@@ -1,11 +1,22 @@
 .question data-id="#{question.id}"
+  div id="question-#{question.id}-vote"
+    -if  can? :upvote, question
+      = render 'shared/votes/upvote_link', votable: question
+      br
+    -if  can? :downvote, question
+      = render 'shared/votes/downvote_link', votable: question
+      br
+    p class="total-score"
+      =question.total_score
+    br
+        
 h1 = question.title
 p = question.body 
 -if question.files.attached?
   -question.files.each do |file|
     div id="file-#{file.id}"
       p= link_to file.filename.to_s, url_for(file)
-      - if current_user&.author?(question)
+      -if can? :destroy, file
             = link_to 'Delete', file_path(file), method: :delete, remote: true
 -if question.links.present?
   .links
@@ -16,7 +27,7 @@ p = question.body
                 script src="#{link.url}.js" width="300" height="300"
             - else  
               li= link_to link.name, link.url
-            -if current_user&.author?(question)
+            -if can? :destroy, link
               li= button_to 'Delete link', link_path(question, link: link), remote: true, method: :delete
 -if question.award.present?
   .award
@@ -27,26 +38,26 @@ p = question.body
 
 .answer-errors
   
--if current_user&.author?(question)
+-if can? :destroy, question
   p= link_to 'Delete question', question_path(question), method: :delete
-
-= form_with model:[@question,@answer], class: 'new-answer', local:false, direct_upload: true,data: {type: :json} do |f|
-  = f.label :title
-  = f.text_area :title
-  = f.label :files
-  = f.file_field :files, multiple: true 
-  = f.fields_for :links do |l|
-    = l.label :name, 'Link name'
-    = l.text_field :name
-    = l.label :url
-    = l.text_field :url
-
-  .links
-    = link_to_add_association 'add link', f, :links
-    
-  = f.submit 'Add new answer'
-
-
+-if can? :create, Answer
+  = form_with model:[@question,@answer], class: 'new-answer', local:false, direct_upload: true,data: {type: :json} do |f|
+    = f.label :title
+    = f.text_area :title
+    = f.label :files
+    = f.file_field :files, multiple: true 
+    = f.fields_for :links do |l|
+      = l.label :name, 'Link name'
+      = l.text_field :name
+      = l.label :url
+      = l.text_field :url
+  
+    .links
+      = link_to_add_association 'add link', f, :links
+      
+    = f.submit 'Add new answer'
+  
+  
 = render "shared/comments", commentable: question
   
 .answers

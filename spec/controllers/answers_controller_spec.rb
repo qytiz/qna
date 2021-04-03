@@ -71,9 +71,9 @@ RSpec.describe AnswersController, type: :controller do
       end.to_not change(Answer, :count)
     end
 
-    it 'redirect to index' do
+    it 'Get 403 status' do
       delete :destroy, params: { id: answer, question: question }, format: :js
-      expect(response).to render_template :destroy
+      expect(response).to have_http_status 403
     end
   end
   describe 'PATCH #update' do

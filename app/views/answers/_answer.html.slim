@@ -1,9 +1,10 @@
 -if answer.persisted?
   li class="answer-id-#{answer.id}"
     div id="answer-#{answer.id}-vote"
-      -if  (current_user.present? && !current_user.author?(answer))
+      -if  can? :upvote, answer
         = render 'shared/votes/upvote_link', votable: answer
         br
+      -if  can? :downvote, answer
         = render 'shared/votes/downvote_link', votable: answer
         br
       p class="total-score"
@@ -16,7 +17,7 @@
       -answer.files.each do |file|
         div id="file-#{file.id}"
           p= link_to file.filename.to_s, url_for(file)
-          - if current_user&.author?(question)
+          - if can? :destroy, file
             = link_to 'Delete', file_path(file), method: :delete, remote: true, direct_upload: true
     -if answer.links.present?
       .links
@@ -27,11 +28,12 @@
                   script src="#{link.url}.js" width="300" height="300"
               - else  
                 li= link_to link.name, link.url
-              -if current_user&.author?(answer)
+              -if can? :destroy, link
                 li= button_to 'Delete link', link_path(answer, link: link), remote: true, method: :delete
     
-    -if current_user&.author?(answer)
+    -if can? :destroy, answer
       = link_to 'Delete answer', answer_path(answer), remote:true, method: :delete
+    -if can? :edit, answer
       = link_to 'Edit', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
       =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false, direct_upload: true do |f|
         =f.label :title, 'Your answer'
@@ -41,6 +43,6 @@
         .links
           = link_to_add_association 'add link', f, :links 
         =f.submit 'Save'
-    -if current_user&.author?(answer.question) && !answer.best_answer
+    -if can? :mark_best, answer and !answer.best_answer
       =link_to 'Mark as best', mark_best_answer_path(answer),remote:true, method: :post
 = render "shared/comments", commentable: answer

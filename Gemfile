@@ -30,6 +30,7 @@ gem 'slim-rails'
 gem 'devise'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+gem 'cancancan'
 gem 'cocoon'
 gem 'decent_exposure'
 gem 'gon'

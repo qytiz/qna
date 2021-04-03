@@ -166,9 +166,9 @@ RSpec.describe QuestionsController, type: :controller do
         expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
       end
 
-      it 'redirect to index' do
-        delete :destroy, params: { id: question }
-        expect(response).to redirect_to questions_path
+      it 'Get 403 status' do
+        delete :destroy, params: { id: question }, format: :js
+        expect(response).to have_http_status 403
       end
     end
   end
