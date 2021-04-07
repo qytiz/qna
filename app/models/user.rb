@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :award_ownings, dependent: :destroy
   has_many :awards, through: :award_ownings
 
+  scope :all_without_this, ->(user) { where.not(id: user.id) }
+
   def author?(object)
     id == object.user_id
   end

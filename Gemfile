@@ -29,13 +29,16 @@ gem 'slim-rails'
 # gem 'image_processing', '~> 1.2'
 gem 'devise'
 # Reduces boot times through caching; required in config/boot.rb
+gem 'active_model_serializers'
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'cancancan'
 gem 'cocoon'
 gem 'decent_exposure'
+gem 'doorkeeper'
 gem 'gon'
 gem 'google-cloud-storage', '~> 1.8', require: false
 gem 'handlebars_assets'
+gem 'oj'
 gem 'rubocop'
 gem 'rubocop-rails'
 gem 'rubocop-rspec'
