@@ -80,7 +80,7 @@ describe 'Answers API', type: :request do
         end
 
         it_behaves_like 'API return status' do
-          let(:expected_status) { 403 }
+          let(:expected_status) { 422 }
         end
       end
     end

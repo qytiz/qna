@@ -3,7 +3,7 @@
 module Api
   module V1
     class AnswersController < Api::V1::BaseController
-      authorize_resource
+      expose :question, -> { Question.find(params[:question_id]) }
 
       def show
         authorize! :show, Answer
@@ -12,13 +12,12 @@ module Api
 
       def create
         authorize! :create, Answer
-        @answer = Answer.new(answer_params)
-        @answer.user_id = current_resource_owner.id
-        @answer.question_id = params[:question_id]
+        @answer = question.answers.create(answer_params)
+        @answer.user = current_resource_owner
         if @answer.save
           render json: @answer
         else
-          head :forbidden
+          render json: @answer.errors, status: :unprocessable_entity
         end
       end
 
@@ -29,7 +28,7 @@ module Api
       end
 
       def answer_params
-        params.require(:answer).permit(:title, files: [], links_attributes: %i[name url])
+        params.require(:answer).permit(:question_id, :title, files: [], links_attributes: %i[name url])
       end
     end
   end

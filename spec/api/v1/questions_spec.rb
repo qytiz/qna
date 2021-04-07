@@ -122,7 +122,7 @@ describe 'Questions API', type: :request do
         end
 
         it_behaves_like 'API return status' do
-          let(:expected_status) { 403 }
+          let(:expected_status) { 422 }
         end
       end
     end
@@ -167,7 +167,7 @@ describe 'Questions API', type: :request do
           end
 
           it_behaves_like 'API return status' do
-            let(:expected_status) { 403 }
+            let(:expected_status) { 422 }
           end
         end
       end
@@ -204,11 +204,7 @@ describe 'Questions API', type: :request do
           before { delete api_path, params: { access_token: access_token.token }.to_json, headers: headers }
 
           it_behaves_like 'API return status' do
-            let(:expected_status) { 200 }
-          end
-
-          it 'return confirming string' do
-            expect(json).to eq 'delited sucessfully'
+            let(:expected_status) { 204 }
           end
         end
       end

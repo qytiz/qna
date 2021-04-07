@@ -17,11 +17,11 @@ module Api
       def create
         authorize! :create, Question
         @question = Question.new(question_params)
-        @question.user_id = current_resource_owner.id
+        @question.user = current_resource_owner
         if @question.save
           render json: @question, serializer: QuestionSerializer
         else
-          head :forbidden
+          render json: @question.errors, status: :unprocessable_entity
         end
       end
 
@@ -30,17 +30,13 @@ module Api
         if question.update(question_params)
           render json: @question, serializer: QuestionSerializer
         else
-          head :forbidden
+          render json: @question.errors, status: :unprocessable_entity
         end
       end
 
       def destroy
         authorize! :destroy, question
-        if question.destroy
-          render json: 'delited sucessfully'.to_json
-        else
-          head :forbidden
-        end
+        question.destroy
       end
 
       private
