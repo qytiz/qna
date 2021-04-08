@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :comment do
     body { 'test comment' }
-    user { nil }
+    user
     commentable { nil }
     trait :invalid do
       body { nil }

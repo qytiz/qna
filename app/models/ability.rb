@@ -42,5 +42,9 @@ class Ability
     can :destroy, Link do |link|
       user.author?(link.linkable)
     end
+
+    can :me, User do |profile|
+      profile.id == user.id
+    end
   end
 end
