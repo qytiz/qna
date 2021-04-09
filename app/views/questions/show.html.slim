@@ -9,7 +9,13 @@
     p class="total-score"
       =question.total_score
     br
-        
+
+  -if current_user
+    - if current_user.subscribed?(question)
+      = link_to 'Unsubscribe', subscribe_path(Subscribe.for(current_user, question)), method: :delete
+    - else
+      = link_to 'Subscribe', question_subscribes_path(question), method: :post     
+
 h1 = question.title
 p = question.body 
 -if question.files.attached?

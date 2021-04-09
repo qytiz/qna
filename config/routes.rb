@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   use_doorkeeper
   devise_for :users
   root to: 'questions#index'
@@ -29,6 +35,7 @@ Rails.application.routes.draw do
   end
 
   resources :questions, concerns: %i[votable commentable] do
+    resources :subscribes, shallow: true, only: %i[create destroy]
     resources :answers, concerns: %i[votable commentable], shallow: true do
       member do
         post :mark_best

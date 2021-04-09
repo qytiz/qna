@@ -24,7 +24,8 @@ class Ability
   def user_abbilities
     guest_abbilities
 
-    can :create, [Question, Answer, Comment]
+    can :create, [Question, Answer, Comment, Subscribe]
+
     can %i[update destroy], [Question, Answer, Comment], user_id: user.id
 
     can :mark_best, Answer do |answer|
@@ -45,6 +46,10 @@ class Ability
 
     can :me, User do |profile|
       profile.id == user.id
+    end
+
+    can :destroy, Subscribe do |subscribe|
+      user.subscribed?(subscribe.question)
     end
   end
 end
