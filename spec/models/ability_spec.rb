@@ -32,6 +32,7 @@ describe Ability do
     it { should be_able_to :create, Question }
     it { should be_able_to :create, Answer }
     it { should be_able_to :create, Comment }
+    it { should be_able_to :create, Subscribe }
 
     it { should be_able_to :update, create(:question, user: user) }
     it { should_not be_able_to :update, create(:question, user: other) }
@@ -78,5 +79,8 @@ describe Ability do
 
     it { should be_able_to :destroy, create(:link, linkable: question) }
     it { should_not be_able_to :destroy, create(:link, linkable: other_question) }
+
+    it { should be_able_to :destroy, create(:subscribe, user: user) }
+    it { should_not be_able_to :destroy, create(:subscribe) }
   end
 end

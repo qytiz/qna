@@ -4,6 +4,7 @@ class Question < ApplicationRecord
   include Votable
   include Commentable
 
+  has_many :subscribes, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :links, dependent: :destroy, as: :linkable
   has_one :award, dependent: :destroy
@@ -17,7 +18,17 @@ class Question < ApplicationRecord
 
   validates :title, :body, presence: true
 
+  after_create :subscribe_creator_for_question
+
+  scope :new_questions, -> { where('created_at > ?', 1.day.ago) }
+
   def have_best_answer?
     !!answers.find_by(best_answer: true)
+  end
+
+  private
+
+  def subscribe_creator_for_question
+    subscribes.create(user: user)
   end
 end

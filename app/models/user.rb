@@ -6,9 +6,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  has_many :subscribes, dependent: :destroy
   has_many :questions, dependent: :destroy
   has_many :answers, dependent: :destroy
-
   has_many :award_ownings, dependent: :destroy
   has_many :awards, through: :award_ownings
 
@@ -16,5 +16,9 @@ class User < ApplicationRecord
 
   def author?(object)
     id == object.user_id
+  end
+
+  def subscribed?(question)
+    subscribes.where(question: question).exists?
   end
 end

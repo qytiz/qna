@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
+  it { should have_many :subscribes }
   it { should have_many :answers }
   it { should have_many(:links).dependent(:destroy) }
   it { should have_many(:answers).dependent(true) }

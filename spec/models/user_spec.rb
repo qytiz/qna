@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
 
   it { should have_many(:answers).dependent(true) }
   it { should have_many(:questions).dependent(true) }
+  it { should have_many :subscribes }
   it { should validate_presence_of :email }
   it { should validate_presence_of :password }
 
@@ -20,7 +21,7 @@ RSpec.describe User, type: :model do
     let!(:user) { create(:user) }
 
     it 'should return users' do
-      expect(User.all_without_this(authenticated)).to eq users
+      expect(User.all_without_this(user)).to eq users
     end
   end
 
